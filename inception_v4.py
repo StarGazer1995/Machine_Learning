@@ -19,7 +19,7 @@ validate_set, train_set = mnist.split(5000)
  
 def main():
     model = InceptionModel([None, 28, 28, 1], [None, 10])
-    #model.train(train_set, epochs=6875)
+    model.train(train_set, epochs=6875)
  
     img, label = validate_set.get_batch(85)
     result = model.classify(img)
