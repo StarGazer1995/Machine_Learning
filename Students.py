@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from scipy import misc
 from tensorflow import keras
 from PIL import Image
-
+from Kaggle import img_load as load
 def get_tif(path):
     return[os.path.join(path,f) for f in os.listdir(path) if f.endswith('.tif')]
 
@@ -18,16 +18,6 @@ def images_show(image_name):
     plt.imshow(image_name)
     plt.colorbar()
     plt.show()
-
-filename=os.path.abspath("G:\\Kaggle\\Data Set\\all\\train_labels.csv")
-data=pd.read_csv(filename)
-#train_dict={data.id,data.label}
-train_images_list=get_tif("G:\\Kaggle\\Data Set\\all\\train")
-train_images=[]
-for i in range(0,799):
-    train_images.append(np.array(misc.imread(train_images_list[i],mode='RGB')))
-
-#train_images=train_images/255.0
 
 input_data=tf.placeholder(tf.float32,shape=[None,96,96,3],name='input_data')
 output=tf.placeholder(tf.int32,shape=[None,],name='output')
@@ -114,6 +104,14 @@ def minibatches(inputs=None, targets=None, batch_size=None, shuffle=False):
         else:
             excerpt = slice(start_idx, start_idx + batch_size)
         yield inputs[excerpt], targets[excerpt]
+
+filename=os.path.abspath("G:\\Kaggle\\Data Set\\all\\train_labels.csv")
+data=pd.read_csv(filename)
+#train_dict={data.id,data.label}
+
+train_images=load.load()
+
+#train_images=train_images/255.0
 
 logits=CNNlayers()
 loss=tf.losses.sparse_softmax_cross_entropy(labels=output,logits=logits)

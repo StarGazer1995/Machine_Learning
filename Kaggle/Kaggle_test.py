@@ -105,7 +105,7 @@ y=tf.placeholder(tf.int32,shape=None,name='y')
 
 logits=CNN_Works()
 loss=tf.losses.sparse_softmax_cross_entropy(labels=y,logits=logits)
-train_op=tf.train.GradientDescentOptimizer(learning_rate=0.01).minimize(loss)
+train_op=tf.train.AdamOptimizer(learning_rate=0.001).minimize(loss)
 correct_prediction = tf.equal(tf.cast(tf.argmax(logits,1),tf.int32),y)    
 acc= tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 saver=tf.train.Saver(max_to_keep=3)

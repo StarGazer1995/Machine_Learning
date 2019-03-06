@@ -1,7 +1,9 @@
-import pandas as pd 
+import pandas as pd
+import numpy as np 
 import os
-import scipy as misc
+import cv2 as cv
 from skimage import io
+
 
 def load():
     img_path="G:\\Kaggle\\Data Set\\all\\train"
@@ -13,11 +15,9 @@ def load():
 def img_load(img_path,target_path,batch_size):
     data=pd.read_csv(target_path)
     target_label=data.label
-    img_index=list(get_tif(img_path))
+    filename=img_path+"\\"+data.id+".tif"
     img=[]
     for i in range(0,batch_size-1):
-        img.append(io.imread(img_index[i]))
+        img.append(np.array(cv.imread(filename[i])))
     return img, target_label[0:batch_size-1]
 
-def get_tif(path):
-    return(os.path.join(path,f) for f in os.listdir(path) if f.endswith('.tif'))
