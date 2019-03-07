@@ -11,7 +11,7 @@ img,labels=img.load()
 #data augment
 
 #data train
-im = np.expand_dims(im, axis=0)
+img = np.expand_dims(img, axis=0)
 
 model = DenseNet(reduction=0.5, classes=2, weights_path=None)
 filepath='checkpoint.h5'

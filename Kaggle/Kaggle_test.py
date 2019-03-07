@@ -109,6 +109,7 @@ train_op=tf.train.AdamOptimizer(learning_rate=0.001).minimize(loss)
 correct_prediction = tf.equal(tf.cast(tf.argmax(logits,1),tf.int32),y)    
 acc= tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 saver=tf.train.Saver(max_to_keep=3)
+loader=tf.train.load_checkpoint()
 max_acc=0
 f=open('acc.txt','w')
  
