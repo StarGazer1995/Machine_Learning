@@ -1,5 +1,6 @@
 from keras.models import Model
 from keras.layers import Input, merge, ZeroPadding2D
+from keras.layers.merge import add
 from keras.layers.core import Dense, Dropout, Activation
 from keras.layers.convolutional import Conv2D
 from keras.layers.pooling import AveragePooling2D, GlobalAveragePooling2D, MaxPooling2D
@@ -96,7 +97,7 @@ def conv_block(x, stage, branch, nb_filter, dropout_rate=None, weight_decay=1e-4
     x = BatchNormalization(epsilon=eps, axis=concat_axis, name=conv_name_base+'_x1_bn')(x)
     x = Scale(axis=concat_axis, name=conv_name_base+'_x1_scale')(x)
     x = Activation('relu', name=relu_name_base+'_x1')(x)
-    x = Conv2D(inter_channel, 1, 1, name=conv_name_base+'_x1', bias=False)(x)
+    x = Conv2D(inter_channel, kernel_size=1, strides=1, name=conv_name_base+'_x1', bias=False,padding='same')(x)
 
     if dropout_rate:
         x = Dropout(dropout_rate)(x)
@@ -106,7 +107,7 @@ def conv_block(x, stage, branch, nb_filter, dropout_rate=None, weight_decay=1e-4
     x = Scale(axis=concat_axis, name=conv_name_base+'_x2_scale')(x)
     x = Activation('relu', name=relu_name_base+'_x2')(x)
     x = ZeroPadding2D((1, 1), name=conv_name_base+'_x2_zeropadding')(x)
-    x = Conv2D(nb_filter, 3, 3, name=conv_name_base+'_x2', bias=False)(x)
+    x = Conv2D(nb_filter, kernel_size=3, strides=3, name=conv_name_base+'_x2', bias=False,padding='same')(x)
 
     if dropout_rate:
         x = Dropout(dropout_rate)(x)
@@ -133,7 +134,7 @@ def transition_block(x, stage, nb_filter, compression=1.0, dropout_rate=None, we
     x = BatchNormalization(epsilon=eps, axis=concat_axis, name=conv_name_base+'_bn')(x)
     x = Scale(axis=concat_axis, name=conv_name_base+'_scale')(x)
     x = Activation('relu', name=relu_name_base)(x)
-    x = Conv2D(int(nb_filter * compression), 1, 1, name=conv_name_base, bias=False)(x)
+    x = Conv2D(int(nb_filter * compression), kernel_size=1, strides=1, name=conv_name_base, bias=False,padding='same')(x)
 
     if dropout_rate:
         x = Dropout(dropout_rate)(x)
@@ -162,7 +163,7 @@ def dense_block(x, stage, nb_layers, nb_filter, growth_rate, dropout_rate=None, 
     for i in range(nb_layers):
         branch = i+1
         x = conv_block(concat_feat, stage, branch, growth_rate, dropout_rate, weight_decay)
-        concat_feat = merge([concat_feat, x], mode='concat', concat_axis=concat_axis, name='concat_'+str(stage)+'_'+str(branch))
+        concat_feat = merge.add([x,concat_feat])
 
         if grow_nb_filters:
             nb_filter += growth_rate

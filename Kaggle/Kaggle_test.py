@@ -109,7 +109,7 @@ train_op=tf.train.AdamOptimizer(learning_rate=0.001).minimize(loss)
 correct_prediction = tf.equal(tf.cast(tf.argmax(logits,1),tf.int32),y)    
 acc= tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 saver=tf.train.Saver(max_to_keep=3)
-loader=tf.train.load_checkpoint()
+
 max_acc=0
 f=open('acc.txt','w')
  
@@ -129,7 +129,7 @@ for epoch in range(n_epoch):
 
     
     #validation
-    '''
+    
     val_loss, val_acc, n_batch = 0, 0, 0
     for x_val_a, y_val_a in minibatches(x_val, y_val, batch_size, shuffle=False):
         err, ac = sess.run([loss,acc], feed_dict={x: x_val_a, y: y_val_a})
@@ -140,7 +140,7 @@ for epoch in range(n_epoch):
     f.write(str(epoch+1)+', val_acc: '+str(val_acc)+'\n')
     if val_acc>max_acc:
         max_acc=val_acc
-        '''
+    
     saver.save(sess,'./faces.ckpt',global_step=epoch+1)
  
 f.close()
